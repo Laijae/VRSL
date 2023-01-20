@@ -14,14 +14,6 @@ public class Lesson : MonoBehaviour
     public string lessonToken = null;
     public DBM dbm;
    
-
-
-
-   //readSign will probably be moved to DBM.cs once dbm functionality is completed 
-   //readsign will ask the database for the sign for the given letter
-
-    
-
     protected void startAlphabet()
     {
         

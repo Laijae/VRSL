@@ -9,25 +9,43 @@ public class Menu : MonoBehaviour
 
     //scripts
     public Lesson lesson;
+    public Login login;
     
     //buttons
     public Button chooseLesson;
     public Button alphabet;
-    public Text alphabetText;
+    
 
     //as other lessons are added, add more buttons here
 
     // Start is called before the first frame update
     void Start()
     {
+        //set all buttons to inactive
+        MainMenu(false);
+        login.loginScreen();
         
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(login.validated == true)
+        {
+            MainMenu(true);
+            login.validated = false; //stops infinite loop
+        }
+         
     }
+
+    public void MainMenu(bool active)
+    {
+        chooseLesson.gameObject.SetActive(active);
+            
+    }
+
+    
 
     public void LessonsSubmenu()
     {
