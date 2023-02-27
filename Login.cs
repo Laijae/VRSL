@@ -6,17 +6,24 @@ using UnityEngine.UI;
 public class Login : MonoBehaviour
 {
     //scripts
+    public DBM dbm;
+
+    //inputs
     public InputField usernameField;
     public InputField passwordField;
+    public inputField idField;
 
     //validation
     public bool validated = false;
     public bool unValidated = false;
     public bool passValidated = false;
 
+    public bool idValidated = false;
+
     //variables
     private string username = null;
     private string password = null;
+    private string id = null;
 
     
     private string email = null;
@@ -25,7 +32,9 @@ public class Login : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        //set all buttons to inactive
+        loginScreen(false);
+
 
     }
 
@@ -33,15 +42,19 @@ public class Login : MonoBehaviour
     void Update()
     {
         //check for a valid username and password every frame
-        Validate();
+        if(validated == false)
+        {
+            Validate();
+
+        }
+        
     }
 
-    public void loginScreen()
-    {
-        
+    public void loginScreen(bool active)
+    {      
         // Load login screen
-        usernameField.gameObject.SetActive(true);
-        passwordField.gameObject.SetActive(true);
+        usernameField.gameObject.SetActive(active);
+        passwordField.gameObject.SetActive(active);
     }
 
 
@@ -53,8 +66,15 @@ public class Login : MonoBehaviour
         {
             validated = true;
             Debug.Log("validated");
+            
         }
         
+    }
+
+    public void ValidateLogin()
+    {
+        //call dbm to read the username and password for a specific ID
+        //if the username and password match, validated = true
     }
 
     public void ReadUN(string input)
@@ -85,7 +105,27 @@ public class Login : MonoBehaviour
         }
         // include database check 
         passValidated = true;
+        
     }
+
+
+    public void ReadID(string input)
+    {
+        //Read user input
+        //promt user to enter password
+        
+        id = input;
+        Debug.Log("id is " + id);
+        if (id != null)
+        {
+            idField.gameObject.SetActive(false);
+        }
+        // include database check 
+        idValidated = true;
+        
+        
+    }
+    
         
     
 

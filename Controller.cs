@@ -28,7 +28,7 @@ public class Controller : MonoBehaviour
     private int framesetCount = 1;
     private float[] framesetOne = new float[3]; //A frameset is essentially a save of the transform at a specific frame
     private float[] framesetTwo = new float[3];
-    private int lastSavedFrame = 0;
+    
     
 
 
@@ -96,7 +96,7 @@ public class Controller : MonoBehaviour
     //
 
     public void ReadTransform()
-    {
+    { 
         //read transform data from controller
         x = gameObject.transform.position.x;
         y = gameObject.transform.position.y;
@@ -235,6 +235,8 @@ public class Controller : MonoBehaviour
         // By yielding and resetting each swing individually, it represents the second FSM diagram in the documentation
         // This means that from one swing state, you can transfer to another swing state
         // without having to reset to 'static' first
+        
+
 
     }
 

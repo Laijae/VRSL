@@ -23,7 +23,8 @@ public class Menu : MonoBehaviour
     {
         //set all buttons to inactive
         MainMenu(false);
-        login.loginScreen();
+        login.loginScreen(true);
+        StartCoroutine(PassLoginScreen());
         
 
     }
@@ -31,12 +32,14 @@ public class Menu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(login.validated == true)
-        {
-            MainMenu(true);
-            login.validated = false; //stops infinite loop
-        }
+        
          
+    }
+
+    public IEnumerator PassLoginScreen()
+    {
+        yield return new WaitUntil(() => login.validated == true);
+        MainMenu(true);       
     }
 
     public void MainMenu(bool active)

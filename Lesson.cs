@@ -14,7 +14,37 @@ public class Lesson : MonoBehaviour
     public string lessonToken = null;
     public DBM dbm;
    
-    protected void startAlphabet()
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //check if lessonToken has been set each frame, if it has, start the lesson with the specific token chosen
+        if(lessonToken != null)
+        {
+            switch (lessonToken)
+            {
+                case "Alphabet":
+                    StartCoroutine(startAlphabet());
+                    break;
+                //as other lessons are added, add more cases here
+                
+                //case "Numbers":
+                //    startNumbers();
+                //    break;
+
+            }
+            lessonToken = null;
+        }
+        
+    }
+
+    protected IEnumerator startAlphabet()
     {
         
 
@@ -32,20 +62,29 @@ public class Lesson : MonoBehaviour
             //get sign from database
             string query = alphabet[i].ToLower();
             List<string> dbPos = dbm.readSign(query);
-            Debug.Log($"Place your hands in this position for {alphabet[i]}: " + string.Join(",", dbPos));
-
-            //get handdata from controller
-            List<string> handPos = Controller.GetHandData(); 
-
-            //compare
-            bool correct = checkSign(dbPos, handPos);
-
-            //
-            if(correct)
-            {
-                summary.Add(alphabet[i]);
-            }
             
+            //prompt user to complete sign
+            Debug.Log($"Place your hands in this position for {alphabet[i]}: " + string.Join(",", dbPos));  
+            if(dbPos[5] != "S")
+            {
+                print("Remember to swing your hand!");
+            }      
+
+            //Initiate a timer for each sign to be performed
+            for(int timer = 1500; timer > 0; timer--)
+            {
+                //get current handdata from controller
+                List<string> handPos = Controller.GetHandData(); 
+                //run it through check function
+                if(checkSign(handPos, dbPos) && checkSwing(dbPos))
+                {
+                    print("Correct!");
+                    summary.Add(alphabet[i]);
+                    break;//break timer loop if correct and go to next sign
+                }
+                yield return null;//wait a frame, this syncs the for loop to the framerate               
+            }
+
 
         }
 
@@ -55,12 +94,15 @@ public class Lesson : MonoBehaviour
     }
 
     
-
+    //
+    // CHECKING METHODS
+    //
     
     protected bool checkSign(List<string> dbPos, List<string> handPos)
     {
         bool correct = true;
-        for(int i = 0; i < dbPos.Count; i++)
+        
+        for(int i = 0; i < 5; i++)
         {
             if(dbPos[i] != handPos[i])
             {
@@ -68,52 +110,98 @@ public class Lesson : MonoBehaviour
                 break; // stop checking the lists if we've already found a mismatch
             }
         }
-        
-        // print the appropriate message depending on whether the two lists are equal
-        if (correct)
-        {
-            Debug.Log("Correct!");
-        }
-        else
-        {
-            Debug.Log("Incorrect!");
-        }
-        
         return correct;
-
     }
 
-    // Start is called before the first frame update
-    void Start()
+    protected bool checkSwing(List<string> dbPos)
     {
-        
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //check if lessonToken has been set eah frame, if it has, start the lesson with the specific token chosen
-        if(lessonToken != null)
+        string dbSwing = dbPos[5].ToLower();
+        if(dbSwing == "S")//if the sign requires no swing movement
         {
-            switch (lessonToken)
-            {
-                case "Alphabet":
-                    startAlphabet();
-                    break;
-                //as other lessons are added, add more cases here
-                
-                //case "Numbers":
-                //    startNumbers();
-                //    break;
-
-            }
-            lessonToken = null;
+            return true;
         }
-        
+        else if(dbSwing.Length == 1) // if the sign requires only one swing
+        {   
+            if(ReadControllerSwing(dbSwing) == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
+        else //if the sign requires multiple swing movements
+        {
+            string[] swingArray = dbSwing.Split(',');//converts the multiple movements to an array of strings
+            for(int i = 0; i < swingArray.Length; i++)//iterates through the array
+            {
+                if(ReadControllerSwing(swingArray[i]) == false)//if any of the swings are incorrect, return false
+                {
+                    return false;
+                }
+            }
+            return true;//if the entire loop runs without returning false, all swings must be true 
+        }
     }
 
+    public bool ReadControllerSwing(string direction)
+    {
+       
+    
+        switch (direction)
+        {
+            case "u":
+                if(Controller.up == true)
+                {
+                    return true;
+                }
+                break;
+            case "d":
+                if(Controller.down == true)
+                {
+                    return true;
+                }
+                break;
+            case "l":
+                if(Controller.left == true)
+                {
+                    return true;
+                }
+                break;
+            case "r":
+                if(Controller.right == true)
+                {
+                    return true;
+                }
+                break;
+            case "f":
+                if(Controller.forward == true)
+                {
+                    return true;
+                }
+                break;
+            case "b":
+                if(Controller.backward == true)
+                {
+                    return true;
+                }
+                break;
+            default:
+                return false;
+        }
+        return false;
+    }
     
 
     
 }
+
+
+
+
+    
+
+    
+

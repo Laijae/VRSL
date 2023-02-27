@@ -10,6 +10,7 @@ public class User : MonoBehaviour
 
     private string name = null;
     private string region = null; //regional language variation, by default will be ASL unless configure to support other languages
+    
 
 
     // Start is called before the first frame update

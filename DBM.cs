@@ -19,6 +19,7 @@ public class DBM : MonoBehaviour
     void Update()
     {
         
+        
     }
 
     // a method to read the sign table in the database
@@ -34,11 +35,8 @@ public class DBM : MonoBehaviour
         IDbCommand dbcmd = dbconn.CreateCommand();
 
         
-        string sqlQuery = $"SELECT T,I,M,R,P FROM Sign WHERE letter = '{inputQuery}'";
+        string sqlQuery = $"SELECT T,I,M,R,P,S FROM Sign WHERE letter = '{inputQuery}'";
         dbcmd.CommandText = sqlQuery;
-
-
-        
 
         IDataReader reader = dbcmd.ExecuteReader();
         while (reader.Read())
@@ -49,6 +47,7 @@ public class DBM : MonoBehaviour
             string middle = reader.GetString(2);
             string ring = reader.GetString(3);
             string pinky = reader.GetString(4);
+            string swing = reader.GetString(5);
                        
             //add to list
             dbPos.Add(thumb);
@@ -56,6 +55,7 @@ public class DBM : MonoBehaviour
             dbPos.Add(middle);
             dbPos.Add(ring);
             dbPos.Add(pinky);
+            dbPos.Add(swing);
 
         }
         // closing connection to database
@@ -67,6 +67,45 @@ public class DBM : MonoBehaviour
         dbconn = null;
 
         return dbPos;
+    
+    }
+
+    public List<string> readLogin(string inputQuery)
+    {
+        // initialising list that will be returned containing all the data for the finger positions.
+        List<string> login = new List<string>();
+
+        string conn = "URI=file:" + Application.dataPath + "/signDB.db"; //Path to database.
+        IDbConnection dbconn;
+        dbconn = (IDbConnection) new SqliteConnection(conn);
+        dbconn.Open(); //Open connection to the database.
+        IDbCommand dbcmd = dbconn.CreateCommand();
+
+        
+        string sqlQuery = $"SELECT un,pass FROM Login WHERE UserID = '{inputQuery}'";
+        dbcmd.CommandText = sqlQuery;
+
+        IDataReader reader = dbcmd.ExecuteReader();
+        while (reader.Read())
+        {
+            //get data
+            string un = reader.GetString(0);
+            string pass = reader.GetString(1);
+                                
+            //add to list
+            login.Add(un);
+            login.Add(pass);
+            
+        }
+        // closing connection to database
+        reader.Close();
+        reader = null;
+        dbcmd.Dispose();
+        dbcmd = null;
+        dbconn.Close();
+        dbconn = null;
+
+        return login;
     
     }
 
