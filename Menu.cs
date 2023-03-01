@@ -23,8 +23,15 @@ public class Menu : MonoBehaviour
     {
         //set all buttons to inactive
         MainMenu(false);
-        login.loginScreen(true);
+
+        login.loginScreen(false);
+
+        login.idCheck(true);
+
+        //start coroutine to wait for login validation
         StartCoroutine(PassLoginScreen());
+
+        
         
 
     }

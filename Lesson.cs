@@ -13,6 +13,8 @@ public class Lesson : MonoBehaviour
     public Controller Controller;
     public string lessonToken = null;
     public DBM dbm;
+
+    public ProgressLevel progressLevel;
    
     // Start is called before the first frame update
     void Start()
@@ -67,11 +69,12 @@ public class Lesson : MonoBehaviour
             Debug.Log($"Place your hands in this position for {alphabet[i]}: " + string.Join(",", dbPos));  
             if(dbPos[5] != "S")
             {
+                print(dbPos[5]);
                 print("Remember to swing your hand!");
             }      
 
             //Initiate a timer for each sign to be performed
-            for(int timer = 1500; timer > 0; timer--)
+            for(int timer = 10; timer > 0; timer--)
             {
                 //get current handdata from controller
                 List<string> handPos = Controller.GetHandData(); 
@@ -87,6 +90,8 @@ public class Lesson : MonoBehaviour
 
 
         }
+
+        progressLevel.updateDatabase(summary);
 
         Debug.Log("Summary, here are the signs you learnt: " + string.Join(",", summary));
         
@@ -116,7 +121,7 @@ public class Lesson : MonoBehaviour
     protected bool checkSwing(List<string> dbPos)
     {
         string dbSwing = dbPos[5].ToLower();
-        if(dbSwing == "S")//if the sign requires no swing movement
+        if(dbSwing == "s")//if the sign requires no swing movement
         {
             return true;
         }
